@@ -1,6 +1,8 @@
 # Proiect-Dezvoltara-aplicatilor-mobile
 titlul spune tot
+
 aplicatia face 3 lucruri:
+
 1->Efectuează note prin utilizarea voice-to-text sau de la tastatură, tradițional.
 2->Salvează notele la spațiul de stocare local.
 3->Afișează toate notele și le oferă posibilitatea de a le asculta prin intermediul sintezei Speech.
