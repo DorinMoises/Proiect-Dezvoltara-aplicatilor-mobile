@@ -16,65 +16,99 @@ Interfața de recunoaștere a vorbirii este surprinzător de precisă pentru o c
 Primul lucru pe care trebuie să-l facem este să verificăm dacă utilizatorul are acces la API și să afișeze un mesaj de eroare adecvat. Din nefericire, API-ul de tip speech-to-text este acceptat numai în Chrome și Firefox (cu un pavilion), astfel încât o mulțime de oameni vor vedea probabil acel mesaj.
 
 try {
+
   var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  
   var recognition = new SpeechRecognition();
+  
 }
+
 catch(e) {
+
   console.error(e);
+  
   $('.no-browser-support').show();
+  
   $('.app').hide();
+  
 }
 
 Variabila de recunoaștere ne va oferi acces la toate metodele și proprietățile API. Există mai multe opțiuni disponibile, dar vom seta doar recunoașterea.continuă la adevărat. Acest lucru va permite utilizatorilor să vorbească cu pauze mai lungi între cuvinte și fraze.
 Înainte de a putea folosi recunoașterea vocii, trebuie să organizăm și o serie de operatori de evenimente. Majoritatea dintre aceștia ascultă pur și simplu schimbări în starea de recunoaștere:
 
 recognition.onstart = function() { 
+
   instructions.text('Voice recognition activated. Try speaking into the microphone.');
+  
 }
 
 recognition.onspeechend = function() {
+
   instructions.text('You were quiet for a while so voice recognition turned itself off.');
+  
 }
 
 recognition.onerror = function(event) {
+
   if(event.error == 'no-speech') {
+  
     instructions.text('No speech was detected. Try again.');  
+    
   };
+  
 }
 
 Există, totuși, un eveniment special, care este foarte important. Se execută de fiecare dată când utilizatorul vorbește un cuvânt sau mai multe cuvinte în succesiune rapidă, oferindu-ne acces la o transcriere text a ceea ce sa spus.Atunci când captem ceva cu ajutorul handlerului onresult îl salvăm într-o variabilă globală și îl afișăm într-o textarea:
 
 recognition.onresult = function(event) {
+
   // event is a SpeechRecognitionEvent object.
+  
   // It holds all the lines we have captured so far. 
+  
   // We only need the current one.
+  
   var current = event.resultIndex;
+  
   // Get a transcript of what was said.
+  
   var transcript = event.results[current][0].transcript;
+  
   // Add the current transcript to the contents of our Note.
+  
   noteContent += transcript;
+  
   noteTextarea.val(noteContent);
+  
 }
 
 Codul de mai sus este ușor simplificat. Există o eroare foarte ciudată pe dispozitive Android care face ca totul să fie repetat de două ori. Nu există încă o soluție oficială, dar am reușit să rezolv(am cautat online) problema fără efecte secundare evidente. Cu acest bug în minte, codul arată astfel:
 
 var mobileRepeatBug = (current == 1 && transcript == event.results[0][0].transcript);
+
 if(!mobileRepeatBug) {
+
   noteContent += transcript;
+  
   noteTextarea.val(noteContent);
+  
 }
 
 După ce am instalat totul, putem începe să folosim funcția de recunoaștere vocală a browserului. Pentru a începe, pur și simplu apelați metoda start ():
 
 $('#start-record-btn').on('click', function(e) {
+
   recognition.start();
+  
 });
 
 Acest lucru va determina utilizatorii să dea permisiunea. Dacă acest lucru este acordat, microfonul dispozitivului va fi activat.
 Browserul va asculta un timp și fiecare frază sau cuvânt recunoscut va fi transcris. API-ul va înceta să asculte automat după câteva secunde de tăcere sau când se oprește manual.
 
 $('#pause-record-btn').on('click', function(e) {
+
   recognition.stop();
+  
 });
 
 Cu aceasta, porțiunea de vorbire-text a aplicației noastre este completă!
@@ -88,15 +122,21 @@ Tot ce vom avea de fapt nevoie pentru demonstrația noastră este metoda speak (
 Iată întregul cod necesar pentru a citi un șir:
 
 function readOutLoud(message) {
+
   var speech = new SpeechSynthesisUtterance();
 
   // Set the text and voice attributes.
+  
   speech.text = message;
+  
   speech.volume = 1;
+  
   speech.rate = 1;
+  
   speech.pitch = 1;
 
   window.speechSynthesis.speak(speech);
+  
 }
 
 Atunci când această funcție este chemată, o voce robot va citi șirul dat, făcând cea mai bună impresie umană.
