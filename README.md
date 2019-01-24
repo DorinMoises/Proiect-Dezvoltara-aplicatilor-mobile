@@ -98,9 +98,14 @@ function readOutLoud(message) {
 
   window.speechSynthesis.speak(speech);
 }
+
 Atunci când această funcție este chemată, o voce robot va citi șirul dat, făcând cea mai bună impresie umană.
 API-urile de sinteză a vorbirii și de recunoaștere a vorbirii funcționează destul de bine și se ocupă cu ușurință de diferite limbi și accente. Din păcate, pentru moment, au limitate de asistență pentru browser, ceea ce îngreunează utilizarea lor în producție. Dacă aveți nevoie de o formă mai fiabilă de recunoaștere a vorbirii, aruncați o privire la aceste API :
+
 https://cloud.google.com/speech/
+
 https://azure.microsoft.com/en-us/services/cognitive-services/speech/
+
 https://cmusphinx.github.io/
+
 https://api.ai/
